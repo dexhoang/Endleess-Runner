@@ -17,13 +17,16 @@ let config = {
             debug: true
         }
     },
+    render: {
+        pixelArt: true
+    },
     scene: [ Menu, Play ]
 }
 
 let game = new Phaser.Game(config)
 
 //reverse keyboard binds
-let keySPACE, keyRESTART
+let keySPACE, keyRESTART, keyJUMP
 
 //global variables
 let heightCenter = game.config.height/2
