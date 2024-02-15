@@ -1,6 +1,8 @@
 //Name: Dexter Hoang
-//Title: Karat Runner
+//Title: Carrot Heist
 //Hours Spent:
+
+'use strict'
 
 let config = {
     parent: 'game',
@@ -20,7 +22,7 @@ let config = {
     render: {
         pixelArt: true
     },
-    scene: [ Menu, Play ]
+    scene: [ Menu, Play , GameOver ]
 }
 
 let game = new Phaser.Game(config)
@@ -33,4 +35,15 @@ let heightCenter = game.config.height/2
 let widthCenter = game.config.width/2
 let gameHeight = game.config.height
 let gameWidth = game.config.width
-let highscore
+let game1
+
+// global game options
+let gameOptions = {
+    platformStartSpeed: 350,
+    spawnRange: [100, 350],
+    platformSizeRange: [50, 250],
+    playerGravity: 900,
+    jumpForce: 400,
+    playerStartPosition: 200,
+    jumps: 2
+}

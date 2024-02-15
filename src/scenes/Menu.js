@@ -43,7 +43,6 @@ class Menu extends Phaser.Scene {
             fontFamily: 'math',
             fontSize: '16px',
             align: 'center',
-            //color: '#37B523'
         }
 
         //create title texts
