@@ -5,7 +5,7 @@ class GameOver extends Phaser.Scene {
 
     preload() {
         this.load.image('gameOver', './assets/gameOver.png')
-
+        this.load.audio('button', './assets/buttonSound.wav')
     }
 
     create() {
@@ -14,6 +14,9 @@ class GameOver extends Phaser.Scene {
 
         //add gameover screen
         this.add.image(widthCenter, heightCenter, 'gameOver')
+
+        //add sounds
+        this.button = this.sound.add('button')
 
         //configs for text
         let titleConfig = {
@@ -51,6 +54,7 @@ class GameOver extends Phaser.Scene {
 
     update() {
         if(Phaser.Input.Keyboard.JustDown(keyRESTART)) {
+            this.button.play()
             this.scene.start('playScene')
         }
     }

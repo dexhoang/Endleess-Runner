@@ -8,7 +8,6 @@ class Play extends Phaser.Scene {
         this.MAX_VELOCITY = 225
         this.JUMP_VELOCITY = -700
         this.JUMPS = 2
-        this.score = 0
     }
 
     preload() {
@@ -28,6 +27,11 @@ class Play extends Phaser.Scene {
             frameWidth: 32
         })
 
+        //load audio
+        this.load.audio('jump', './assets/jump.mp3')
+        this.load.audio('carrotPickup', './assets/carrotPickup.wav')
+        this.load.audio('gameoverSound', './assets/gameoverSound.mp3')
+
     }
 
     create() {
@@ -38,6 +42,12 @@ class Play extends Phaser.Scene {
         //define keys
         keyRESTART = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R)
         keyJUMP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
+        //sounds
+        this.jumpSound = this.sound.add('jump')
+        this.carrotPickup = this.sound.add('carrotPickup')
+        this.gameoverSound = this.sound.add('gameoverSound')
+
 
         //text config for score text
         let scoreConfig = {
@@ -65,19 +75,7 @@ class Play extends Phaser.Scene {
             })
         })
 
-        // this.carrot = this.physics.add.sprite(widthCenter, heightCenter, 'carrot')
-        // this.goldCarrot = this.physics.add.sprite(widthCenter + 150, heightCenter, 'goldCarrot')
-
-        //create starting platform
-        // this.grassGround = this.add.group()
-        // for (let i = 0; i < game.config.width; i += 32) {
-        //     let groundTile = this.physics.add.sprite(i, gameHeight - 32, 'grass').setOrigin(0)
-        //     groundTile.setImmovable(true)
-        //     groundTile.body.allowGravity = false
-        //     groundTile.body.setVelocityX(-100)
-        //     this.grassGround.add(groundTile)
-        // }
-
+        //starting platform
         this.startPlatform = this.physics.add.sprite(0, gameHeight - 32, 'grassTile').setOrigin(0)
         this.startPlatform.setImmovable(true)
         this.startPlatform.body.setAllowGravity(false)
@@ -95,14 +93,11 @@ class Play extends Phaser.Scene {
             return platform
         }
 
+        //spawn platforms in tempo
         function spawnPlatforms() {
             var randomY = Phaser.Math.Between(180, 400)
             var platform = createPlatform(config.width + 100, randomY)
-    
-            // Set velocity to move the platform to the left
-            platform.setVelocityX(-250) // Adjust the velocity as needed
-    
-            // Adjust the interval to control spawning frequency
+            platform.setVelocityX(-250)
             this.time.addEvent({ delay: 1000, callback: spawnPlatforms, callbackScope: this })
         }
 
@@ -112,56 +107,28 @@ class Play extends Phaser.Scene {
         var carrots = this.physics.add.group()
 
         function createCarrots(x, y) {
-            var luck = Phaser.Math.Between(0, 10)
-            if (luck == 1) {
-                var carrot = carrots.create(x, y, 'goldCarrot')
-            } else {
-                var carrot = carrots.create(x, y, 'carrot')
-            }
+            var carrot = carrots.create(x, y, 'carrot')
             carrot.setOrigin(0.5, 0.5)
             carrot.body.allowGravity = false
             return carrot
         }
-
+        
+        //spawns the carrots in specified tempo
         function spawnCarrots() {
             var randomY = Phaser.Math.Between(225, 425)
             var carrot = createCarrots(config.width + 100, randomY)
-
-            carrot.setVelocityX(-300) // Adjust the velocity as needed
-    
-            // Adjust the interval to control spawning frequency
+            carrot.setVelocityX(-300)
             this.time.addEvent({ delay: 1000, callback: spawnCarrots, callbackScope: this })
         }
 
         spawnCarrots.call(this)
-
-        //spawn golden carrots
-        // var goldCarrots = this.physics.add.group()
-
-        // function creategoldCarrots(x, y) {
-        //     var goldcarrot = goldCarrots.create(x, y, 'goldCarrot')
-        //     goldcarrot.setOrigin(0.5, 0.5)
-        //     goldcarrot.body.allowGravity = false
-        //     return goldcarrot
-        // }
-
-        // function spawngoldCarrots() {
-        //     var randomY = Phaser.Math.Between(200, 400)
-        //     var goldcarrot = creategoldCarrots(config.width + 100, randomY)
-
-        //     goldcarrot.setVelocityX(-300) // Adjust the velocity as needed
-    
-        //     // Adjust the interval to control spawning frequency
-        //     this.time.addEvent({ delay: 3000, callback: spawngoldCarrots, callbackScope: this })
-        // }
-
-        // spawngoldCarrots.call(this)
 
         //create collisions
         this.physics.add.collider(this.bunny, this.startPlatform)
         this.physics.add.collider(this.bunny, platforms)
 
         this.physics.add.overlap(this.bunny, carrots, (bunny, carrots) => {
+            this.carrotPickup.play()
             changeScore(bunny, carrots)
             carrots.destroy()
             carrots.setVisible(false)
@@ -185,14 +152,15 @@ class Play extends Phaser.Scene {
             score += 20
             scoreText.setText('' + score)
         }
+        
     }
 
     update() {
-        //create sprite movement
-        if(Phaser.Input.Keyboard.JustDown(keyRESTART)) {
+        //checks for gameover collision
+        if (this.bunny.y == 460) {
+            this.gameoverSound.play({seek: 0.5})
             this.scene.start('overScene')
         }
-
 
         //checks if bunny is grounded, plays animation if so
         this.bunny.isGrounded = this.bunny.body.touching.down
@@ -205,6 +173,7 @@ class Play extends Phaser.Scene {
         }
 
         if(this.jumps > 0 && Phaser.Input.Keyboard.DownDuration(keyJUMP, 150)) {
+            this.jumpSound.play()
             this.bunny.setVelocityY(this.JUMP_VELOCITY)
             this.jumping = true
         }

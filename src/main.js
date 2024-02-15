@@ -35,15 +35,3 @@ let heightCenter = game.config.height/2
 let widthCenter = game.config.width/2
 let gameHeight = game.config.height
 let gameWidth = game.config.width
-let game1
-
-// global game options
-let gameOptions = {
-    platformStartSpeed: 350,
-    spawnRange: [100, 350],
-    platformSizeRange: [50, 250],
-    playerGravity: 900,
-    jumpForce: 400,
-    playerStartPosition: 200,
-    jumps: 2
-}
