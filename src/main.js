@@ -1,6 +1,6 @@
 //Name: Dexter Hoang
 //Title: Carrot Heist
-//Hours Spent:
+//Hours Spent: 40
 
 'use strict'
 

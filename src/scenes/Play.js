@@ -31,6 +31,7 @@ class Play extends Phaser.Scene {
         this.load.audio('jump', './assets/jump.mp3')
         this.load.audio('carrotPickup', './assets/carrotPickup.wav')
         this.load.audio('gameoverSound', './assets/gameoverSound.mp3')
+        this.load.audio('goldCarrotSound', './assets/goldenCarrotPickup.wav')
 
     }
 
@@ -47,6 +48,7 @@ class Play extends Phaser.Scene {
         this.jumpSound = this.sound.add('jump')
         this.carrotPickup = this.sound.add('carrotPickup')
         this.gameoverSound = this.sound.add('gameoverSound')
+        this.goldCarrotSound = this.sound.add('goldCarrotSound')
 
 
         //text config for score text
@@ -107,7 +109,11 @@ class Play extends Phaser.Scene {
         var carrots = this.physics.add.group()
 
         function createCarrots(x, y) {
-            var carrot = carrots.create(x, y, 'carrot')
+            if (score >= 200) {
+                var carrot = carrots.create(x, y, 'goldCarrot')
+            } else {
+                var carrot = carrots.create(x, y, 'carrot')
+            }
             carrot.setOrigin(0.5, 0.5)
             carrot.body.allowGravity = false
             return carrot
@@ -117,7 +123,11 @@ class Play extends Phaser.Scene {
         function spawnCarrots() {
             var randomY = Phaser.Math.Between(225, 425)
             var carrot = createCarrots(config.width + 100, randomY)
-            carrot.setVelocityX(-300)
+            if (score >= 200) {
+                carrot.setVelocityX(-370)
+            } else {
+                carrot.setVelocityX(-300)
+            }
             this.time.addEvent({ delay: 1000, callback: spawnCarrots, callbackScope: this })
         }
 
@@ -128,7 +138,11 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.bunny, platforms)
 
         this.physics.add.overlap(this.bunny, carrots, (bunny, carrots) => {
-            this.carrotPickup.play()
+            if (score >= 200) {
+                this.goldCarrotSound.play()
+            } else {
+                this.carrotPickup.play()
+            }
             changeScore(bunny, carrots)
             carrots.destroy()
             carrots.setVisible(false)
@@ -149,7 +163,11 @@ class Play extends Phaser.Scene {
         scoreText = this.add.text(widthCenter, heightCenter, '0', scoreConfig).setOrigin(0.5)
         scoreText.setAlpha(0.5)
         function changeScore (bunny, carrot) {
-            score += 20
+            if (score >= 200) {
+                score += 50
+            } else {
+                score += 20
+            }
             scoreText.setText('' + score)
         }
         
