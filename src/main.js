@@ -1,6 +1,10 @@
 //Name: Dexter Hoang
 //Title: Carrot Heist
 //Hours Spent: 40
+//Creative Tilt: In my game, I wanted it to be a cute art style so I put alot of effort in my title and game over screen.
+//I really wanted it to be bunny themed so I had grassy platforms, and the score is determined by how many carrots you pick up.
+//I also added an extra fun thing where if the player's score reaches 200, the carrots will turn into golden carrots and be worth more points!
+// I also wanted to add an RNG type of generation for the carrots so thats why some of the carrots my be moving in place that don't make sense at all.
 
 'use strict'
 
